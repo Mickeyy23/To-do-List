@@ -1,75 +1,36 @@
-var app = new function() {
-    this.el= document.getElementById('tasks');
-    this.tasks=[]
-
-    this.fetchAll = function(){
-        var data='';
-
-        if(this.tasks.length>0) {
-            for(i=0; i<this.tasks.length;i++) {
-                data+='<tr>';
-                data+='<td>'+(i+1)+'. '+this.tasks[i]+'</td>';
-                data+='<td><button onclick="app.Edit('+i+')"class="btn btn-warning">Edit</button></td> ';
-                data+='<td><button onclick="app.Delete('+i+')"class="btn btn-danger">Delete</button></td> ';
-                data+='</tr>'
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    new Vue({
+        el: '#app',
+        data: {
+            newTask: '',
+            tasks: [],
+            showEditBox: false,
+            editedTask: '',
+            editedTaskIndex: -1
+        },
+        methods: {
+            addTask: function() {
+                if (this.newTask.trim()) {
+                    this.tasks.push(this.newTask.trim());
+                    this.newTask = '';
+                }
+            },
+            editTask: function(index) {
+                this.editedTaskIndex = index;
+                this.editedTask = this.tasks[index];
+                this.showEditBox = true;
+            },
+            saveEdit: function() {
+                if (this.editedTask.trim()) {
+                    this.$set(this.tasks, this.editedTaskIndex, this.editedTask.trim());
+                    this.showEditBox = false;
+                }
+            },
+            deleteTask: function(index) {
+                this.tasks.splice(index, 1);
+            },
+            closeInput: function() {
+                this.showEditBox = false;
             }
         }
-        this.Count(this.tasks.length);
-        return this.el.innerHTML = data;
-
-    };
-
-    this.Add = function(){
-        el= document.getElementById('add-todo');
-        var task = el.value;
-        if(tasks){
-            this.tasks.push(task.trim());
-            el.value='';
-            this.fetchAll();
-        }
-
-    };
-
-    this.Edit = function(item){
-        el = document.getElementById('edit-todo');
-        el.value = this.tasks[item]
-        document.getElementById('edit-box').style.display = 'block';
-        self=this;
-
-        document.getElementById('save-edit').onsubmit = function(){
-            var task = el.value;
-            if(task){
-                self.tasks.splice(item, 1, task.trim());
-                self.fetchAll();
-                CloseInput();
-            }
-        }
-
-    };
-
-    this.Delete = function(item){
-        this.tasks.splice(item,1)
-        this.fetchAll();
-    };
-
-    this.Count = function(data){
-        var el = document.getElementById('counter');
-        var name = 'Tasks';
-        if(data){
-            if(data == 1){
-                name = 'Task';
-            }
-            el.innerHTML = data+' '+name;
-        }
-        else{
-            el.innerHTML = "No "+ name;
-        }
-
-    };
-}
-
-app.fetchAll();
-
-function CloseInput(){
-    document.getElementById('edit-box').style.display = 'none';
-}
+    });
