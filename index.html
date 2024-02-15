@@ -1,45 +1,49 @@
-<html>
-    <head>
-        <meta charset="ufr=8">
-        <title>0hCrud! Things I Forgot to Do </title>
-        <link rel="stylesheet" type="text/css" href="style.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0hCrud! Things I Forgot to Do</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
 
-    </head>
-    <body>
-        <div class="title">
-            <h1> Oh Crud!</h1>
-            <p> Things i forgot to do:</p>
-        </div>
-        <div class="form">
-            <form action="javasrtipt:void(0);" method="POST" onsubmit="app.Add()">
-                <input type="text" id="add-todo" placeholder="Thing to do">
-                <input type="submit" value="Add" class="btn btn-primary">
-            </form>
-            <p> You have:</p>
-            <p id="counter"></p>
-            <table>
-                <tr class="to-do">
-                    <th><h3> To-Do:</h3></th>
-                </tr>
-                <tbody id="tasks">
-            
-                </tbody>
-            </table>
-        </div>
+<div id="app" class="container mt-5">
+    <div class="title">
+        <h1>Oh Crud!</h1>
+        <p>Things I forgot to do:</p>
+    </div>
 
-        <div id="edit-box"   role="aria-hidden">
-            <form action="javascript:void(0);" method="POST" 
-            id="save-edit">
-            <input type="text" id="edit-todo">
-            <input type="submit" value="Save" class="btn btn-success">
-            <a onclick="CloseInput()" aria-label="Close">&#10006;</a>
+    <div class="form">
+        <form @submit.prevent="addTask">
+            <input type="text" v-model="newTask" placeholder="Thing to do" class="form-control">
+            <button type="submit" class="btn btn-primary">Add</button>
         </form>
-        </div>
-        <script src="script.js">
 
-        </script>
-    </body>
-    </body>
-</html>
+        <p>You have:</p>
+        <p id="counter">{{ tasks.length }} {{ tasks.length === 1 ? 'thing to do' : 'things to do' }}</p>
+
+        <table>
+            <tr class="to-do">
+                <th><h3>To-Do:</h3></th>
+            </tr>
+            <tbody id="tasks">
+                <tr v-for="(task, index) in tasks" :key="index">
+                    <td>{{ index + 1 }}. {{ task }}</td>
+                    <td>
+                        <button @click="editTask(index)" class="btn btn-warning">Edit</button>
+                        <button @click="deleteTask(index)" class="btn btn-danger">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div v-if="showEditBox">
+        <form @submit.prevent="saveEdit">
+            <input type="text" v-model="editedTask" class="form-control">
+            <button type="submit" class="btn btn-success">Save</button>
+            <button @click="closeInput" class="btn btn-secondary">&#10006;</button>
+        </form>
+    </div>
+</div>
